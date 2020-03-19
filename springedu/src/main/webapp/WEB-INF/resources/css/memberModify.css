@@ -1,0 +1,172 @@
+@charset "utf-8";
+/* *{outline: 1px solid red; } */
+*{font-family: 'Jua', sans-serif;}
+
+div{
+    box-sizing: border-box;
+    padding: 3px;
+}
+body{
+    background-color: #FFFFFF;
+}
+form{
+    margin-top: 50px;
+}
+.container{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+.content{
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+    width: 300px;
+    height: 900px;
+}
+
+.content div{
+    float: 1 1 300px;
+    flex: 1;
+}
+.gnb{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    background-color: #FFFFFF;
+    border-bottom: 1px solid #EEEEEE;
+
+}
+.gnb div{
+    margin: 10px;
+    line-height: 20px;
+}
+.fas{
+    color: gray;
+}
+.image{
+    color: rosybrown;
+}
+.gnbsub.hamburger{
+    flex: 1;
+}
+.gnbsub.logo{
+    flex: 5;
+}
+.gnbsub.logo{
+    text-align: left;
+    margin: 5px;
+}
+
+.gnbsub.logo img{
+    width: 50%;
+    height: auto;
+    margin: 0;
+}
+
+.gnbsub.searchIcon{
+    flex: 1;
+}
+.gnbsub.basket{
+    flex: 1;
+}
+
+.content>div:nth-child(4),
+.content div:nth-child(7),
+.content div:nth-child(10),
+.content div:nth-child(13),
+.content div:nth-child(16),
+.content div:nth-child(19) {
+    /* border: 1px solid gray; */
+    border-bottom: 1px solid gray;
+    padding: 1px;
+    padding-left: 10px;
+    background-color: white;
+    /* border-radius: 5px; */
+}
+.join-title{
+    text-align: center;
+}
+input{
+    width: 250px;
+    border: none;
+}
+input[type="radio"]{
+    width: auto;
+}
+.errmsg{
+    color: red;
+    font-size: 0.7rem;
+    font-weight: bold;
+}
+button,select{
+    width: 290px;
+    border: none;
+}
+select{
+    width: 270;
+    border: none;
+}
+#modifyBtn{
+    background-color: #03C75A;
+    color: white;
+    font-weight: 900;
+    border: 1px solid #03C75A;
+    padding: 5px;
+    height: 30px;
+}
+i{
+    padding: 5px 4px;
+}
+label{
+    vertical-align: top;
+}
+.footer{
+    background-color: #000000;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+}
+.footer>div{
+    flex: 1;
+}
+.footerContainer.container1{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+.cusCenter{
+    flex: 1;
+    padding: 8px 0 0 0;
+    margin: 0 0 0 18px;
+    font-size: 16px;
+}
+.cusDetail{
+    flex: 2.5;
+}
+.cusDetail>div{
+    text-align: left;
+    font-size: 10px;
+}
+.cusDetail>div:nth-child(1){
+    font-size: 16px;
+    /* padding:  5px 5px 5px 0; */
+    color: turquoise;
+}
+
+.companyInt{
+    font-size: 10px;
+    text-align: left;
+    padding: 5px 3px;
+    margin: 0 0 0 20px;
+    margin-top: 5px;
+}
+.footerContainer.container3{
+    font-size: 10px;
+    text-align: left;
+    padding: 5px 3px;
+    margin: 0 0 0 20px;
+
+}

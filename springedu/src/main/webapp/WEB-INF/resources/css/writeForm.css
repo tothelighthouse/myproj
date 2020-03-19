@@ -1,0 +1,133 @@
+*{
+  font-family: 'Song Myung', serif;
+  font-size: 20px;
+
+}
+
+a {
+	text-decoration: none;
+}
+body {
+	width: 100%;
+	height: 100%;
+	margin: 0 auto;
+	display: grid;
+	justify-items: center;
+}
+i {
+	vertical-align: baseline;
+}
+.container {
+	width: 90%;
+	max-width: 1024px;
+	display: grid;
+	grid-template-rows: auto auto repeat(4, auto);
+	row-gap: 10px;
+	position: relative;
+}
+
+
+.header {
+	display: grid;
+	grid-template-columns: 1fr repeat(3, auto);
+	column-gap: 10px;
+}
+
+.body {
+	display: grid;
+}
+.body div {
+	border: 0.1px solid;
+}
+
+.writeFormContainer {
+	display: grid;
+	grid-template-rows: repeat(11, auto);
+}
+.writeFormContainer > div{
+	display: grid;
+	grid-template-columns: 1fr 6fr;
+}
+.writeFormContainer > div:nth-child(4) > div:nth-child(2) {
+	display: grid;
+	grid-template-columns: repeat(2, auto);
+}
+
+#writeMenu {
+	display: grid;
+	grid-template-columns: repeat(3, auto);
+	justify-content: end;
+}
+[id$="errors"]{
+	grid-area : auto / 1 / span 1 / -1;
+	color: red;
+	font-size : 16px
+}
+
+.footer {
+	display: grid;
+	grid-template: repeat(2, auto) / repeat(2, auto);
+	gap: 5px;
+}
+.footer div {
+	/* border: 1px solid; */
+	background-color: rgba(202, 255, 255,.6);
+	font-size: 14px;
+}
+.footerMenu {
+	grid-area: 1 / 1 / span 1 / span 2;
+	display: grid;
+	grid-template-columns: repeat(4, auto);
+	justify-items: center;
+}
+
+.customerCenter {
+	display: grid;
+	grid-template-rows: repeat(4, auto);
+}
+@media (max-width: 768px) {
+	.realTimeBody {
+		/* display: grid; */
+		grid-template: repeat(3, 150px) / repeat(4, auto);
+	}
+	.usedBest {
+		display: grid;
+		grid-template-rows: auto 1fr;
+	}
+	.usedBestBody {
+		display: grid;
+		grid-template: repeat(6, auto) / repeat(2, auto);
+	}
+	.powerbookShopBody {
+		display: grid;
+		grid-template: repeat(8, 150px) / auto;
+	}
+}
+@media (max-width: 425px) {
+	.body {
+		display: grid;
+		grid-template: repeat(3, auto) / auto;
+		/* grid-template-rows: repeat(3, auto); */
+		/* grid-template-columns: auto; */
+	}
+	.realTime {
+		display: grid;
+		grid-area: 1/1 / span 1 / span 1;
+	}
+
+	.realTimeBody {
+		display: grid;
+		grid-template: repeat(6, 150px) / repeat(2, auto);
+	}
+	.usedBestBody {
+		display: grid;
+		grid-template: repeat(6, 150px) / repeat(2, auto);
+	}
+	.footer {
+		display: grid;
+		grid-template: repeat(3, auto) / auto;
+	}
+	.footerMenu {
+		grid-area: 1/1 / span 1 / span 1;
+	}
+}

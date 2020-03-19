@@ -1,0 +1,155 @@
+*{
+  font-family: 'Song Myung', serif;
+  font-size: 20px;
+}
+
+a{
+	text-decoration: none;
+}
+
+
+i {
+	vertical-align: baseline;
+}
+body {
+	width: 100%;
+	height: 100%;
+	margin: 0 auto;
+	display: grid;
+	justify-items: center;
+}
+.container {
+	width: 90%;
+	max-width: 1024px;
+	display: grid;
+	grid-template-rows: auto auto repeat(4, auto);
+	row-gap: 10px;
+	position: relative;
+}
+
+.header {
+	display: grid;
+	grid-template-columns: 1fr repeat(4, auto);
+		background-color: rgba(202, 255, 255,.6);
+	
+	column-gap: 10px;
+}
+.body {
+	display: grid;
+	justify-items: center;
+	align-items: center;
+}
+.loginContainer {
+	height: 600px;
+	display: grid;
+	justify-content: center;
+	align-content: center;
+	row-gap: 20px;
+}
+
+#loginForm {
+	display: grid;
+	grid-template-rows: repeat(2, auto);
+	align-items: center;
+	row-gap: 10px;
+}
+
+#loginForm > div:nth-child(1),
+#loginForm > div:nth-child(2),
+#loginForm > div:nth-child(3),
+#loginForm > div:nth-child(4),
+#loginForm > div:nth-child(5) {
+	display: grid;
+	/* justify-items: center; */
+}
+#loginForm > div:nth-child(6) {
+	display: grid;
+}
+#id,
+#pw {
+	border: none;
+	border-bottom: 1px dotted gray;
+}
+
+#loginBtn {
+	border: none;
+	border-radius: 5px;
+}
+
+.find_info {
+	display: grid;
+	grid-template-columns: repeat(6, auto);
+}
+
+.footer {
+	display: grid;
+	grid-template: repeat(2, auto) / repeat(2, auto);
+	gap: 5px;
+}
+.footer div {
+	/* border: 1px solid; */
+	background-color: rgba(202, 255, 255,.6);
+	font-size: 14px;
+}
+.footerMenu {
+	grid-area: 1 / 1 / span 1 / span 2;
+	display: grid;
+	grid-template-columns: repeat(4, auto);
+	justify-items: center;
+}
+
+.customerCenter {
+	display: grid;
+	grid-template-rows: repeat(4, auto);
+}
+.errmsg {
+  color:red;
+  font-size:0.6rem;
+  font-weight:bold;        
+}
+@media (max-width: 768px) {
+	.realTimeBody {
+		/* display: grid; */
+		grid-template: repeat(3, 150px) / repeat(4, auto);
+	}
+	.usedBest {
+		display: grid;
+		grid-template-rows: auto 1fr;
+	}
+	.usedBestBody {
+		display: grid;
+		grid-template: repeat(6, auto) / repeat(2, auto);
+	}
+	.powerbookShopBody {
+		display: grid;
+		grid-template: repeat(8, 150px) / auto;
+	}
+}
+@media (max-width: 425px) {
+	.body {
+		display: grid;
+		grid-template: repeat(3, auto) / auto;
+		/* grid-template-rows: repeat(3, auto); */
+		/* grid-template-columns: auto; */
+	}
+	.realTime {
+		display: grid;
+		grid-area: 1/1 / span 1 / span 1;
+	}
+
+	.realTimeBody {
+		display: grid;
+		grid-template: repeat(6, 150px) / repeat(2, auto);
+	}
+	.usedBestBody {
+		display: grid;
+		grid-template: repeat(6, 150px) / repeat(2, auto);
+	}
+	.footer {
+		display: grid;
+		grid-template: repeat(3, auto) / auto;
+	}
+	.footerMenu {
+		grid-area: 1/1 / span 1 / span 1;
+	}
+}

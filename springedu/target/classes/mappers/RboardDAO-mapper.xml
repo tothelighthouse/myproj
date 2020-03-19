@@ -1,0 +1,261 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="mappers.RboardDAO-mapper">
+
+<!-- 댓글 등록 -->
+<insert id="write"
+        parameterType="RboardVO">
+  INSERT INTO rboard (
+      rnum,
+      bnum,
+      rid,
+      rnickname,
+      rcontent,
+      rgroup
+  ) VALUES (
+      rboard_rnum_seq.NEXTVAL,
+      #{bnum},
+      #{rid},
+      #{rnickname},
+      #{rcontent},
+      rboard_rnum_seq.CURRVAL
+  )
+  
+  <selectKey keyProperty="rnum" resultType="long" order="AFTER">
+    select rboard_rnum_seq.currval from dual
+  </selectKey>
+  
+</insert>  
+<!-- 댓글 목록 -->
+<select id="list"
+        parameterType="map"
+        resultType="RboardVO">
+  <!-- select 
+          rnum,
+          bnum,
+          rid,
+          rnickname,
+          rcdate,
+          rcontent,
+          rgroup,
+          rstep,
+          rindent,
+          prnum
+  from(
+      SELECT row_number() over(order by rgroup desc, rstep asc) as num, 
+          t1.rnum,
+          t1.bnum,
+          t1.rid,
+          t1.rnickname,
+          t1.rcdate,
+          t1.rcontent,
+          t1.rgroup,
+          t1.rstep,
+          t1.rindent,
+          t1.prnum
+      from rboard t1
+      where bnum = #{bnum}
+      )
+  where num between #{startRec} and #{endRec} -->
+  
+	select     x1.rnum,         x1.bnum,
+		         x1.rid,          x1.rnickname,
+		         x1.rcdate,
+		         x1.rcontent,
+		         x1.rgroup,       x1.rstep,        x1.rindent,
+		         x1.prnum,        x1.prid,		   x1.prnickname,
+	           nvl(x2.good,0) good,  nvl(x2.bad,0) bad
+    from
+ (select 
+          rnum,
+          bnum,
+          rid,
+          rnickname,
+          rcdate,
+          rcontent,
+          rgroup,
+          rstep,
+          rindent,
+          prnum , prid, prnickname
+  from(
+      SELECT row_number() over(order by rgroup desc, rstep asc) as num, 
+          t1.rnum,
+          t1.bnum,
+          t1.rid,
+          t1.rnickname,
+          t1.rcdate,
+          t1.rcontent,
+          t1.rgroup,
+          t1.rstep,
+          t1.rindent,
+          t1.prnum , t1.prid, t1.prnickname
+      from rboard t1
+      where bnum = #{bnum}
+      )
+    where num between #{startRec} and #{endRec}
+   ) x1,
+      
+<!--  where num between 1 and 10) x1 left outer join  아우터 조인 다른 표기법-->    
+    
+(select rnum, nvl(count(decode(vote,1,1)),0) good, nvl(count(decode(vote,2,1)),0) bad
+    from board_vote
+    group by rnum) x2
+    where x1.rnum = x2.rnum(+)
+<!--     on x1.rnum = x2.rnum -->
+</select>
+
+<!-- 댓글 수정 -->
+<update id="modify"
+        parameterType="RboardVO">
+
+  update rboard
+     set rudate = systimestamp, 
+         rcontent = #{rcontent}
+   where rnum = #{rnum}        
+
+</update>
+<!-- 댓글 삭제 -->
+<delete id="delete"
+        parameterType="long">
+  delete from rboard
+   where rnum = #{rnum}
+        
+</delete>
+<!-- 대댓글 작성 -->
+<insert id="reply"
+        parameterType="RboardVO">
+  INSERT INTO rboard (
+      rnum,
+      bnum,
+      rid,
+      rnickname,
+      rcontent,
+      rgroup, rstep, rindent,
+      prnum, prid, prnickname
+  ) VALUES (
+      rboard_rnum_seq.NEXTVAL,
+      #{bnum},
+      #{rid},
+      #{rnickname},
+      #{rcontent},
+	  #{rgroup},
+	  #{rstep} + 1,
+	  #{rindent} + 1,
+	  #{prnum},
+	  #{prid},
+	  #{prnickname}		
+		
+  )
+  <selectKey keyProperty="rnum" resultType="long" order="AFTER">
+    select rboard_rnum_seq.currval from dual
+  </selectKey>
+  
+  
+</insert>
+<!-- 이전 댓글 step update -->
+<update id="updateStep"
+        parameterType="map">
+  update rboard
+     set rstep  = rstep + 1
+   where rgroup = #{rgroup} and rstep > #{rstep}
+</update>
+
+<!-- 댓글정보 읽어오기 -->
+<select id="replyView"
+				parameterType="long"
+				resultType="RboardVO">
+	select bnum, rid, rnickname, rgroup, rstep, rindent 
+	  from rboard where rnum = #{rnum}
+</select>
+
+
+<!-- 댓글 호감/비호감 -->
+
+<select id="checkVote"
+        parameterType="VoteVO">
+  select count(rnum) 
+    from rboard_vote
+   where rnum = #{rnum}
+     and bnum = #{bnum}
+     and rid  = #{rid}
+
+</select>
+
+<insert id="insertVote"
+        parameterType="VoteVO">
+  INSERT INTO board_vote (
+      rnum,
+      bnum,
+      rid,
+      vote
+  ) VALUES (
+      #{rnum},
+      #{bnum},
+      #{rid},
+      #{vote}
+  )
+</insert>
+
+<update id="updateVote">
+  update rboard 
+     set vote  = #{vote}
+         udate = systimestamp
+   where rnum = #{rnum}
+     and bnum = #{bnum}
+     and rid  = #{rid}
+</update>
+
+<update id="mergeVote">
+  merge into board_vote
+  using dual
+      on(rnum = #{rnum} and bnum = #{bnum} and rid =#{rid} )
+  when matched then
+      update set vote = #{vote}
+  when not matched then
+      insert (rnum, bnum,rid, vote) 
+      values(#{rnum}, #{bnum}, #{rid}, #{vote})
+</update>
+
+
+<!-- 댓글 총계 -->
+<select id="replyTotalRec"
+        parameterType="long"
+        resultType="int">
+select count(rnum) from rboard where bnum = #{bnum}
+</select>
+
+
+
+</mapper>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

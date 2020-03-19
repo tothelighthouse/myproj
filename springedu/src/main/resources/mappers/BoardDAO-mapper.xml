@@ -1,0 +1,348 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="mappers.BoardDAO-mapper">
+	<!-- //카테고리 읽어오기 -->
+	<select id="getCategory"
+			resultType="BoardCategoryVO">
+		select cid, cname from board_category
+	</select>
+	
+	<!-- //게시글 작성 -->
+	<insert id="write"
+			parameterType="BoardVO">
+	insert into board (
+		bnum, 
+		bcategory, 
+		btitle, 
+		bid, 
+		bnickname, 
+		bcontent, 
+		bgroup
+	)values(
+		board_bnum_seq.nextval, 
+		#{boardCategoryVO.cid}, 
+		#{btitle}, 
+		#{bid}, 
+		#{bnickname}, 
+		#{bcontent}, 
+		board_bnum_seq.currval 
+	)
+	<selectKey keyProperty="bnum" resultType="long" order="AFTER">
+		select board_bnum_seq.currval from dual
+	</selectKey>
+		
+	</insert>
+	<!-- 첨부파일 저장 -->
+	<insert id="fileWrite"
+			parameterType="BoardFileVO">
+		insert into BOARD_UPLOAD_FILE (
+			fid,	bnum,	fname,	fsize,	ftype,	fdata
+		)values(
+			BOARD_UPLOAD_FILE_FID_SEQ.nextval,#{bnum},#{fname},#{fsize},#{ftype},#{fdata}
+		)
+	
+	
+	</insert>
+	<!-- //게시글 수정 -->
+	<update id="modify"
+			parameterType="BoardVO">
+	 update board  
+        set bcategory = #{boardCategoryVO.cid},
+			btitle    = #{btitle},
+			bcontent  = #{bcontent},
+            budate    = systimestamp
+	  where bnum      = #{bnum}
+	
+	</update>
+	
+	<!-- //게시글 삭제 -->
+	<delete id="delete"	parameterType="long">
+		delete from board where bnum = #{bnum}
+	</delete>
+	<!-- 첨부파일 1건 삭제 -->
+	<delete id="fileDelete" parameterType="long">
+		delete from board_upload_file where fid = #{fid}
+	</delete>
+	<!-- 게시글 첨부파일 전체 삭제 -->
+	<delete id="filesDelete" parameterType="long">
+		delete from board_upload_file where bnum = #{bnum}
+	</delete>
+	<!-- //게시글 보기 -->
+	<select id="view"
+			parameterType="long"
+			resultType="BoardVO">
+	select 
+			t2.cid as "boardCategoryVO.cid",
+			t2.cname as "boardCategoryVO.cname", 
+			bcdate , 
+			bcontent , 
+			bgroup , 
+			bhit , 
+			bid , 
+			bindent , 
+			bnickname , 
+			bnum , 
+			bstep , 
+			btitle , 
+			budate  
+    	from 
+    		board t1, board_category t2 
+    	where 
+    		t1.bcategory = t2.cid
+    		and 
+    		t1.bnum = #{bnum}
+    	order by t1.bnum desc
+	</select>
+	<select id="fileViews"
+			parameterType="long"
+			resultType="BoardFileVO">
+			select 
+				bnum ,
+			 	cdate ,
+			 	fdata , 
+			 	fid , 
+			 	fname , 
+			 	fsize , 
+			 	ftype , 
+			 	udate  
+			 from 
+			 	board_upload_file where bnum = #{bnum}
+	</select>
+	<update id="updateHit"
+			parameterType="long">
+			update board 
+			   set bhit = bhit + 1 
+			 where bnum =  #{bnum }
+	</update>
+	<!-- //게시글 목록 -->
+	<!-- //1)전체 -->
+	<select id="list1"
+			resultType="BoardVO">
+		select 
+			t2.cid as "boardCategoryVO.cid",
+			t2.cname as "boardCategoryVO.cname", 
+			bcdate , 
+			bcontent , 
+			bgroup , 
+			bhit , 
+			bid , 
+			bindent , 
+			bnickname , 
+			bnum , 
+			bstep , 
+			btitle , 
+			budate  
+    	from board t1, board_category t2 
+    	where t1.bcategory = t2.cid
+        order by t1.bgroup desc,
+                 t1.bstep asc
+    </select>
+	<!-- //2)검색어 없는 게시글 페이징 -->
+	
+    <!-- 3)검색어 있는 게시글검색(전체,제목,내용,작성자ID,별칭) -->
+	<select id="list3"
+					parameterType="map"
+					resultType="BoardVO">
+         select bnum, 
+                cid   as "boardCategoryVO.cid",
+                cname as "boardCategoryVO.cname",
+                btitle,
+                bid,
+                bnickname,
+                bcdate,
+                budate,
+                bhit,
+                bindent
+           from (select row_number() over(order by bgroup desc, bstep asc) as num, 
+                     t1.bnum,
+                     t2.cid,
+                     t2.cname,
+                     t1.btitle,
+                     t1.bid,
+                     t1.bnickname,
+                     t1.bcdate,
+                     t1.budate,
+                     t1.bhit,
+                     t1.bindent
+                from board t1, board_category t2
+               where t1.bcategory = t2.cid 
+     <if test="searchType != null and list != null"> 
+   		and
+	 		<foreach item="item" collection="list"
+	 			open="(" separator="or" close=")">   		
+<!--  			<bind name="item" value="'%'+item+'%'"/> -->
+      <choose>
+      	<!-- 제목+내용 -->
+      	<when test="searchType == 'TC'.toString()">
+      		btitle 	 like  '%'||#{item}||'%' 
+      		 or bcontent like  '%'||#{item}||'%' 
+      	</when>
+      	<!-- 제목 -->
+      	<when test="searchType == 'T'.toString()">
+      		btitle 	 like '%'||#{item}||'%'             	
+      	</when>
+      	<!-- 내용 -->
+      	<when test="searchType == 'C'.toString()">
+      		bcontent like '%'||#{item}||'%'             	
+      	</when>               	
+      	<!-- 작성자(별칭) -->
+      	<when test="searchType == 'N'.toString()">
+      		bnickname like '%'||#{item}||'%'                	
+      	</when>                 	
+      	<!-- 아이디 -->
+      	<when test="searchType == 'I'.toString()">
+      		bid like '%'||#{item}||'%'                	
+      	</when>   
+      	<!-- 전체 -->              	
+       <otherwise>
+      			 btitle 	 	like '%'||#{item}||'%' 
+          or bcontent 	like '%'||#{item}||'%'                    
+          or bnickname 	like '%'||#{item}||'%' 
+          or bid 				like '%'||#{item}||'%' 
+       </otherwise>
+      </choose>
+      </foreach>  
+     </if>  
+              )                            
+      where num between #{startRec} and #{endRec}     
+	</select>
+	<!-- //게시글 답글 작성 -->
+	<insert id="reply"
+            parameterType="BoardVO">
+      insert into board (
+        bnum, 
+        bcategory, 
+        btitle, 
+        bid, 
+        bnickname, 
+        bcontent, 
+        bgroup,
+        bstep,
+        bindent
+        
+      )values(
+        board_bnum_seq.nextval, 
+        #{boardCategoryVO.cid}, 
+        #{btitle}, 
+        #{bid}, 
+        #{bnickname}, 
+        #{bcontent},
+        #{bgroup},
+        #{bstep} + 1,
+        #{bindent} + 1
+      )
+      <selectKey keyProperty="bnum" resultType="long" order="AFTER">
+        select board_bnum_seq.currval from dual
+      </selectKey>
+    </insert>
+    <!-- 이전 답글 step 업데이트 -->
+    <!-- 이전 답글중 원글의 bstep보다 큰값이 있는 경우 bstep+1 -->
+    <update id="updateStep"
+            parameterType="map">
+      update board
+         set bstep  = bstep + 1
+       where bgroup = #{bgroup} and bstep > #{bstep}
+    
+    </update>
+	<!-- 첨부 파일 조회 -->
+		<select id="fileView"
+			parameterType="long"
+			resultType="BoardFileVO">
+			select 
+				bnum ,
+			 	cdate ,
+			 	fdata , 
+			 	fid , 
+			 	fname , 
+			 	fsize , 
+			 	ftype , 
+			 	udate  
+			 from 
+			 	board_upload_file where fid = #{fid}
+	</select>
+  
+    
+    <!-- 총 레코드수 -->
+  <select id="totalRecordCount"
+          parameterType="map"
+          resultType="int">
+    select count(t1.bnum) as totalcnt
+      from board t1, board_category t2
+     where t1.bcategory = t2.cid 
+     <if test="searchType != null and list != null"> 
+      and
+      <foreach item="item" collection="list"
+        open="(" separator="or" close=")">      
+<!--        <bind name="item" value="'%'+item+'%'"/> -->
+      <choose>
+        <!-- 제목+내용 -->
+        <when test="searchType == 'TC'.toString()">
+          btitle   like  '%'||#{item}||'%' 
+           or bcontent like  '%'||#{item}||'%' 
+        </when>
+        <!-- 제목 -->
+        <when test="searchType == 'T'.toString()">
+          btitle   like '%'||#{item}||'%'               
+        </when>
+        <!-- 내용 -->
+        <when test="searchType == 'C'.toString()">
+          bcontent like '%'||#{item}||'%'               
+        </when>                 
+        <!-- 작성자(별칭) -->
+        <when test="searchType == 'N'.toString()">
+          bnickname like '%'||#{item}||'%'                  
+        </when>                   
+        <!-- 아이디 -->
+        <when test="searchType == 'I'.toString()">
+          bid like '%'||#{item}||'%'                  
+        </when>   
+        <!-- 전체 -->               
+       <otherwise>
+             btitle     like '%'||#{item}||'%' 
+          or bcontent   like '%'||#{item}||'%'                    
+          or bnickname  like '%'||#{item}||'%' 
+          or bid        like '%'||#{item}||'%' 
+       </otherwise>
+      </choose>
+      </foreach>  
+     </if>                        
+  </select>
+	
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</mapper>

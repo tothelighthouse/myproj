@@ -1,0 +1,168 @@
+* {
+	font-family: "Song Myung", serif;
+	font-size: 20px;
+}
+
+a {
+	text-decoration: none;
+}
+body {
+	width: 100%;
+	height: 100%;
+	margin: 0 auto;
+	display: grid;
+	justify-items: center;
+}
+i {
+	vertical-align: baseline;
+}
+.container {
+	width: 90%;
+	max-width: 1024px;
+	display: grid;
+	grid-template-rows: auto auto repeat(4, auto);
+	row-gap: 10px;
+	position: relative;
+}
+
+.header {
+	display: grid;
+	grid-template-columns: 1fr repeat(3, auto);
+	column-gap: 10px;
+}
+
+.body {
+	display: grid;
+}
+
+.memberJoinForm {
+	display: grid;
+	grid-template-rows: repeat(10, auto) auto;
+	grid-template-columns: 0.7fr;
+	justify-content: center;
+	row-gap: 30px;
+}
+.join-title{
+	display:grid;
+	justify-content: center;
+	
+}
+
+.input > label{
+	display: grid;
+	justify-content: center;
+	align-content: center;
+	border: 1px dotted;
+	border-radius: 5px;
+}
+.input > div:nth-of-type(1){
+	display: grid;
+	justify-content: center;
+	align-content: center;
+	border: 1px dotted;
+	border-radius: 5px;
+}
+.input > div:nth-of-type(1) > input{
+	border: none;
+}
+
+.memberJoinForm > div:nth-child(n + 2):nth-child(-n + 9) {
+	
+	display: grid;
+	grid-template: repeat(2, 1.5em) / 1fr 2fr;
+	column-gap: 20px;
+}
+
+.memberJoinForm > div:nth-child(n + 2):nth-child(-n + 9) > div{
+	display:grid;
+	grid-template-columns: 1fr auto;
+
+}
+
+.memberJoinForm > div:nth-child(n + 2):nth-child(-n + 9) > div > i{
+	display: grid;
+	justify-content: center;
+}
+
+.memberJoinForm > div:nth-child(n + 2):nth-child(-n + 9) > span{
+	grid-area: 2 / 2 / span 1 / -1;
+	display: grid;
+	/* justify-items: center; */
+	
+}
+
+.memberJoinForm div:last-child{
+	display: grid;
+	
+}
+.birthInput > span{
+	overflow: hidden;
+	white-space: nowrap;
+}
+.footer {
+	display: grid;
+	grid-template: repeat(2, auto) / repeat(2, auto);
+	gap: 5px;
+}
+.footer div {
+	/* border: 1px solid; */
+	background-color: rgba(202, 255, 255, 0.6);
+	font-size: 14px;
+}
+.footerMenu {
+	grid-area: 1 / 1 / span 1 / span 2;
+	display: grid;
+	grid-template-columns: repeat(4, auto);
+	justify-items: center;
+}
+
+.customerCenter {
+	display: grid;
+	grid-template-rows: repeat(4, auto);
+}
+@media (max-width: 768px) {
+	.realTimeBody {
+		/* display: grid; */
+		grid-template: repeat(3, 150px) / repeat(4, auto);
+	}
+	.usedBest {
+		display: grid;
+		grid-template-rows: auto 1fr;
+	}
+	.usedBestBody {
+		display: grid;
+		grid-template: repeat(6, auto) / repeat(2, auto);
+	}
+	.powerbookShopBody {
+		display: grid;
+		grid-template: repeat(8, 150px) / auto;
+	}
+}
+@media (max-width: 425px) {
+	.body {
+		display: grid;
+		grid-template: repeat(3, auto) / auto;
+		/* grid-template-rows: repeat(3, auto); */
+		/* grid-template-columns: auto; */
+	}
+	.realTime {
+		display: grid;
+		grid-area: 1/1 / span 1 / span 1;
+	}
+
+	.realTimeBody {
+		display: grid;
+		grid-template: repeat(6, 150px) / repeat(2, auto);
+	}
+	.usedBestBody {
+		display: grid;
+		grid-template: repeat(6, 150px) / repeat(2, auto);
+	}
+	.footer {
+		display: grid;
+		grid-template: repeat(3, auto) / auto;
+	}
+	.footerMenu {
+		grid-area: 1/1 / span 1 / span 1;
+	}
+}
